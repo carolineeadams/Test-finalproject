@@ -1,0 +1,67 @@
+# Insights from Reddit Submissions and Comments about the Stock Market and "Basic Girl" Companies
+
+# Introduction
+
+## Summary
+
+"Basic girl" stocks typically refer to companies that cater to the interests and consumption habits of a certain demographic group, specifically young women who may be interested in fashion, beauty, and lifestyle products. These types of companies are often popular and widely recognized among consumers, which makes them interesting to study from an investment perspective. Investors often look for opportunities to invest in companies that have strong brand recognition and a loyal customer base. These companies often have a large and dedicated customer base that is willing to spend money on their products, which can lead to consistent revenue growth and profitability. Basic girl stocks often operate in the consumer discretionary sector, which can be sensitive to changes in consumer behavior and trends. This can make them a good barometer for overall consumer sentiment and provide insights into broader economic trends.
+
+Discussions in subreddits about stocks or investing can provide insights into market sentiment about specific companies or sectors. By monitoring these discussions, investors can gain a better understanding of how other investors perceive certain stocks, and potentially adjust their own investment strategies accordingly. These discussions may also provide information about industry news and trends related to basic girl stocks, such as new product launches, changing consumer preferences, or evolving market conditions. By studying basic girl stocks, investors can gain a better understanding of the overall health of the consumer discretionary sector and make informed investment decisions based on this information. Basic girl stocks can be interesting to study from an investment perspective due to their popularity among consumers, potential for consistent growth, and insights into broader economic trends.
+
+Companies like Apple, Netflix, and Starbucks benefit from the brand recognition that members of a higher social class, with disposable income, provide. (Source: <https://wakemag.org/voices/2022/2/21/the-white-girl-index>) For this project, we define "basic girl" stocks as the following: Apple (AAPL), Etsy (ETSY), Lululemon (LULU), Facebook (META), Netflix (NFLX), Nike (NKE), Pinterest (PINS), Peloton (PTON), Starbucks (SBUX), Spotify (SPOT), and Ulta (ULTA).
+
+This analysis examined how often four subreddits (wallstreetbets, investing, stock, traders) received submissions and explored general themes across, sentiment of, and engagement with these posts, using natural language processing techniques. The average share price, average number of submissions, and average number of comments for the collection of basic girl stocks is seen below in Figure 1. Note that the y-axis has been logged to make it easier to visually compare and analyze the data, and as a result, the y-axis values are no longer directly proportional to the original data. There was a peak in discussion about "basic" stocks in January - March 2022, during which time the average stock price of those companies dropped. The submissions and comments then plateaued for the rest of the year as the stock price steadily climbed back up but never reached the previous price.
+
+![](images/Fig1-Intro.png)
+
+Sources: Yahoo Finance (share price data) and Pushshift Reddit archive (submissions and comments data).
+
+This project also leveraged machine learning and external stock price data to identify patterns in Reddit submissions that could be used to predict information about stocks such as future stock prices. We were interested in how submissions and comments in these forums discussed these "basic girl" stocks and how submission and comment engagement scores, sentiment, and discussion content varied when posts discussed "basic girl" stocks versus other stocks.
+
+# Appendix
+
+## Exploratory Data Analysis
+
+#### **1. Explore the frequency of "basic girl" stocks mentioned in stock forums on reddit. Illustrate which are discussed more frequently.**
+
+*Technical Proposal:* Filter reddit data to top stock-related subreddits (investing, wallstreetbets, stockmarket, traders, stocks). Create a dictionary of stocks that fall into this category, and use regex expressions to locate every reddit submission from these subreddits that mentions these stocks. Identify how often these stocks are mentioned by producing statistics related to the proportion of posts in a month that discuss these stocks in relation to the total number of submissions in these stocks in that month. Clearly state what average percentage of submissions mention these stocks in a given month. To identify which of these stocks are mentioned at higher rates than others, we'll sort counts.
+
+#### **2. In submissions where a "basic girl" stock is mentioned, identify which of those mentioned stocks receive the most comments, on average.**
+
+*Technical Proposal:* Filter the submissions, then categorize the submissions by the mentioned stock and count the number of comments for each stock. Compute the average comment count for each stock and present the results in a data frame sorted in descending order. This analysis will help identify the stocks that generate the highest average comment count and determine which "basic girl" stocks are receiving the most engagement.
+
+#### **3. Examine average score for each "basic girl" stock in terms of controversiality and comments.**
+
+*Technical Proposal:* Filter the submissions, then categorize the submissions by the mentioned stock and collect the submission score for each submission. Average these submission scores for each stock and display the results in a data frame. This analysis can help make conclusions about which "basic girl" stocks are producing higher average submission scores.
+
+#### **4. Explore how the frequency of "basic girl" stock mentions fluctuate over time.**
+
+*Technical Proposal:* Create a plot to examine the frequency of these stocks appearing in discussion over time. This plot will help to identify trends in frequencies and understand potential links between spikes in discussions and current events surrounding those stocks. Also, provide a comparison between the fluctuation in the submissions of interest versus all submissions in the subreddits of interest in the form of a plot over time.
+
+#### **5. Leveraging external stock data, illustrate how the stock prices of "basic girl" stocks fluctuate over time and identify any points where an increase/decrease in frequency of mentions aligns with an increase/decrease in stock price.**
+
+*Technical Proposal:* Collect stock data regarding the identified "basic girl" stocks and create a time series plot to examine the fluctuation of stock prices over time. The reddit data also includes month and year of submission variables, so compare the frequency of submissions versus stock prices. This will allow us to compare stock trends to the discussions of these stocks in the subreddits. The two trends will give insight into whether or not stock prices might influence the amount of discussions occurring at a given point in time.
+
+## Natural Language Processing
+
+#### **6. For submissions where a "basic girl" stock is mentioned and we see large numbers of comments, identify what topics and themes are prominent in those discussions.**
+
+*Technical Proposal:* Extract words and phrases that help determine the main topics and themes in the subreddit discussions about "basic girl" stocks. For example, one analysis could explore whether or not stock prices are a topic of discussion in these submissions where "basic girl" stocks are mentioned. Specific topics of interest will be defined by us - ex) market discussion: stock prices, shares, market, etc; then, search the text for the occurrence of these themes. This analysis will provide contextual information about submissions that mention these stocks.
+
+#### **7. Analyze the general sentiment of posts that mention "basic girl" stocks, and examine whether the different stocks have varying sentiments.**
+
+*Technical Proposal:* Categorize submissions that mention a "basic girl" stock as either positive, negative or neutral. Extract text from the Reddit posts and use the [pretrained Spark NLP John Snow Labs Sentiment Classifier](https://nlp.johnsnowlabs.com/2021/01/18/sentimentdl_use_twitter_en.html) to classify sentiment of submission text after data cleaning - namely removing stop words and punctuation. Group the sentiment by stock to visualize the distribution of positive, negative, and neutral sentiments for each stock.
+
+#### **8. Explore which type of posts (positive, negative, or neutral) receive the most engagement, and determine if sentiment impacts the price of a specific stock.**
+
+*Technical Proposal:* Group the submissions by sentiment; then, average the number of comments across submissions in each sentiment category. Display these averages in a data frame to determine which sentiment receives the highest engagement (based on number of comments). Then, using the external stock price data from a single point in time, examine potential correlations between positive/negative/neutral classification and high/low stock price, if any.
+
+## Machine Learning
+
+#### **9. Explore whether or not we can predict the sentiment of a submission based on engagement of the post and the stock associated with it.**
+
+*Technical Proposal:* This analysis aims to use predictive machine learning techniques to analyze submissions and comments, taking into account factors such as the popularity and stock price of the mentioned stock to predict the sentiment of the stock. Using these features an appropriate set of models will be developed to predict sentiment as found in the previous NLP segment.
+
+#### **10. Predict the industry of the stock being discussed in a submission based on data related to the submission and its comments, such as keywords, sentiment, and context.**
+
+*Technical Proposal:* Develop a machine learning model that predicts the industry of a stock being discussed in a submission based on data related to the submission and its comments, such as keywords, sentiment, and context. Using the data from the previous NLP segment plus other available features, a supervised learning algorithm, such as a Random Forest Classifier, will be developed to predict the industry of the stock being discussed in the submission.

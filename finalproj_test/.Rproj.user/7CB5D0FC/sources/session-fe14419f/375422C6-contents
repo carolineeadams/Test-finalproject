@@ -1,0 +1,286 @@
+# Exploratory Data Analysis
+
+## Executive Summary
+
+This analysis examined submissions and comments data from several subreddits and explored the frequency of stocks mentioned in these forums on Reddit. The data analysis involved examining relevant columns, creating new variables, removing rows with zero text length, and identifying and removing columns with missing values. The analysis showed that Meta, Apple, and Netflix were the most frequently mentioned stocks, and Tesla was the most controversial company in the dataset.
+
+We analyzed submissions data obtained from the subreddits wallstreetbets, investing, stockmarket, traders, and stocks. The time that the submission was posted, number of comments, upvotes minus downvotes, submission text content, title, and subreddit that the submission came from were essential variables in the data. Only comments that came from posts in wallstreetbets were analyzed due size constraints. Variables of interest for this analysis were the comment text, controversiality score, upvotes minus downvotes, time that the comment was posted, submission id that the comment was associated with, and subreddit that the submission came from.
+
+After examining the data, it was discovered that the posts were made between January 1, 2022 and January 31, 2023. Steps were taken to prepare the data for analysis, such as removing missing values and outliers. A search was implemented to find posts that discussed the stocks of interest, including company names, stock abbreviations, previous company names, and potential misspellings. It was discovered that 2,583 posts used one of the search terms in the body of the post or in the title.
+
+Finally, the business questions were explored using the prepared data. We found that of "basic girl stocks" in our list, Meta showed up in submissions most frequently, followed by Apple and Netflix. It was also found that Tesla was the most controversial company in the dataset, with 31.6% of comments regarding the company classified as controversial.
+
+## Analysis Report
+
+### Data Quality Checks and Transformations
+
+#### Submissions Data
+
+The submissions data was obtained from the subreddits wallstreetbets, investing, stockmarket, traders, and stocks. The dataset contained *191011* rows. There were multiple columns in the submissions data, although, not all of them were relevant to our analysis. The columns of interest to us were:
+
+-   *created_utc:* the time that the submission was posted
+
+-   *num_comments:* the number of comments in response to the submission
+
+-   *score:* the number of upvotes minus the number of downvotes on a submission
+
+-   *selftext:* the submission text content
+
+-   *title:* the title of the submission
+
+-   *subreddit:* the subreddit that the submission came from
+
+Since we obtained data from four different subreddits, we examined how many submissions in our dataset came from each subreddit.
+
+![](images/EDA-Table1.png){fig-align="center" width="600"}
+
+We noticed that there were two columns that referenced dates and times: created_utc and retrieved_on. Both of these columns had values in unix time. Unix time is a way of representing a timestamp by representing the time as the number of seconds since January 1st, 1970 at 00:00:00 UTC. We transformed these columns into datetime format in two new columns: created_datetime, and retrieved_datetime. We found that posts in the submissions dataset were posted between January 1, 2022 and January 31, 2023. This applied to the comments data as well, which we discuss further below.
+
+To better understand the post text we were working with, we created a variable to represent the length of the submission text and examined summary statistics about the length of the post. The mean number of characters in a submission was approximately 121. The maximum number of characters was 42449 and the minimum was 0. For our analysis, we did not want to include posts in which the text length is equal to zero as this indicates that the post text was missing. Therefore, we dropped all rows where submission_length was equal to 0, which ended up being 63245.
+
+Missing values are also important to identify and potentially remove from the dataset. Below, we have plotted the number of missing values present in each of the dataset's columns. As noted earlier, our primary variables of interest were created_utc, num_comments, score, selftext, title, and subreddit. There were no missing values in the primary variables of interest. Four columns had missing values in almost every row. These were: author_flair_css_class, author_flair_text, distinguished, and edited. These are not central to our analysis, and therefore, we decided to fully drop these columns.
+
+![](images/submissions_missing_dta.png){width="750"}
+
+To prepare for the bulk of our exploratory analysis, we implemented a regex search to find posts that discussed the stocks in which we were interested. Our regex included names of the companies of interest (e.g., Netflix), their stock abbreviations (e.g., NFLX), previous company names (e.g., Facebook), and potential misspellings that we anticipated. We also wrote the regex pattern to be case insensitive. In our primary dataframe, we created a new variable to indicate if the Reddit post used one of our search terms. We also filtered the original dataframe to create a new dataframe that only included rows in which the post text or title included one of the search terms. We found that 2583 posts used one of our search terms in the body of the post or in the title.
+
+#### Comments Data
+
+Due to the size of the dataset for all comments from all four subreddits, we limited our analysis of comment data to only comments that came from posts in wallstreetbets. All posts from wallstreetbets in our dataset were associated with 15,137,889 comments.
+
+Variables of interest to our analysis of the comments data included:
+
+-   *body:* the actual comment text
+
+-   *controversiality:* whether or not a comment received a similar amount of upvotes to downvotes, hence being controversial
+
+-   *created_utc:* the date/time the comment was posted
+
+-   *link_id:* id of the submission that the comment was posted in response to
+
+-   *score:* the number of upvotes minus the number of downvotes on a comment
+
+-   *subreddit:* which subreddit the comment fell under
+
+To better understand the comment text we were working with, we created a variable to represent the length of the comment text and examined summary statistics about the length as before. The mean number of characters in a comment was approximately 88. The maximum number of characters was 10882 and the minimum was 0. For our analysis, we did not want to include comments in which the text length was equal to zero as this indicates that the body text was missing. Therefore, we dropped all rows where comment_length was equal to 0, which ended up being 125.
+
+Missing values are also important to identify and potentially remove from the dataset. Below, we have plotted the number of missing values present in each of the comment dataset's columns. Out of the entire comments dataset, we can see that there were no missing values in the primary variables of interest.
+
+Like the submissions data, four columns had missing values in almost every row. These were: author_flair_css_class, author_flair_text, distinguished, and edited. These are not central to our analysis, and therefore, we decided to fully drop these columns.
+
+![](images/comments_missing_dta.png){fig-align="center"}
+
+### Business Questions
+
+1.  **Explore the frequency of "basic girl" stocks mentioned in stock forums on Reddit. Illustrate which are discussed more frequently.**
+
+To start, we calculated how many times each individual stock was mentioned in a post or a post's title. The search was based on whether the stock ticker or the company name in full was mentioned. We found that Meta showed up in submissions most frequently, followed by Apple, and Netflix. Lululemon was mentioned the least out of this set of stocks.
+
+Below, we have plotted the number of posts with our stocks of interest being referenced in either a submission title or text content, by stock.
+
+![](images/submissions_count_stocks.png){fig-align="center" width="600"}
+
+2.  **In submissions where a "basic girl" stock is mentioned, identify which of those mentioned stocks receive the most comments in general and on average.**
+
+We filtered the data set to only posts that mentioned "basic girl" stocks. We then calculated the average score for posts that discussed each of these stocks and the average number of comments that they received. Submissions that mentioned Pinterest had the highest average score, followed by those that mentioned Lululemon, and finally Ulta. Posts that mentioned Starbucks had the lowest average score out of this set of stocks. Submissions that mentioned Pinterest had the highest number of comments in response on average, followed by those that mentioned Ulta and Meta. Submissions that mentioned Nike had the lowest average number of comments out of this set of stocks.
+
+![](images/EDA-Table2.png){fig-align="center" width="650"}
+
+![](images/average_comment_scores.png){fig-align="center"}
+
+3.  **Examine average score for each "basic girl" stock in terms of controversiality and comments.**
+
+To analyze this, we merged the submissions data for the submissions in which a "basic girl" stock was mentioned with the relevant comments. The dummy variables created for the submissions data were carried over to this merged data frame. We then calculated the average score and average controversiality of the comments associated with submissions that mentioned each of the individual "basic girl" stocks we examined.
+
+Comments on submissions that mentioned Pinterest had the highest degree of controversiality, followed by comments on submissions that mentioned Starbucks. Comments on submissions that mentioned Lululemon had the lowest degree of controversiality. Comments on submissions that mentioned Ulta had the highest average scores, followed by the comments on submissions that mentioned Netflix. Comments on submissions that mentioned Starbucks had the lowest average scores out of this set of stocks.
+
+![](images/EDA-Table3.png){fig-align="center" width="500"}
+
+4.  **Explore how the frequency of "basic girl" stock mentions fluctuate over time.**
+
+We were also interested in examining how the frequency of submissions varied over time. As noted earlier, our dataset had submissions from January 2022 through January 2023. First we plotted the frequency of all submissions in the dataset over time.
+
+![](images/all_submissions_over_time-03.jpg){fig-align="center" width="600"}
+
+Then we plotted the frequency of submissions using terms related to our "basic" stocks of interest over time.
+
+![](images/basic_submissions_over_time.jpg){fig-align="center" width="600"}
+
+The plot displaying the frequency of only submissions that mentioned a "basic girl" stock showed that daily number of submissions were generally stable over time. However, there were two clear jumps in number of submissions. The first is seen around February 2022 and the second is seen around May 2022. Interestingly, the second jump in number of daily submissions for this set of posts occurs at the same time that we see a dip in total number of submissions across the studied subreddits in the first plot.
+
+We also examined the frequency of daily comment postings in the subreddit over time. Like daily submission frequency, it appears as though daily comment posting frequency is relatively stable over time. We do see the same spike in number of comments in September 2022 that we saw in frequency of all submissions in stock-related subreddits in the submissions dataset.
+
+Next, we subset the comments dataframe to include only id numbers that matched the id numbers of the posts in the submissions dataset that only included submissions with a mention of a "basic girl" stock. We then examined how posting of comments on these submissions varied over time. The frequency of comment posting on these submissions mirrored the frequency of submission postings seen below for submissions focused on "basic girl" stocks. We see a lot of activity around February and May 2022, as well as September 2022.
+
+![](images/basic_comments_over_time.jpg){fig-align="center" width="600"}
+
+5.  **Leveraging external stock data, illustrate how the stock prices of "basic girl" stocks fluctuate over time and identify any points where an increase/decrease in frequency of mentions aligns with an increase/decrease in stock price (explored in the previous section).**
+
+We compared stock performance over time to Reddit submission and comment engagement over time. In April 2022, there was a sharp peak in number of in Reddit comments that were associated with submissions that had mentions of "basic" stocks. At the same point, most stocks took a dip in their pricing, most notably Nike. However, this was short lived. In many cases, the stock price quickly reverted back to its original level once market forces took over.
+
+There could be some impact however of Reddit discussions on stock prices. When a large number of users on a subreddit discuss a particular stock, it can lead to increased buying or selling pressure, which can affect the stock's price in the short term. For example, if a large number of Reddit users discuss buying a particular stock, this could lead to increased demand for the stock, which could drive up its price.
+
+Below are three visualizations that show the daily adjusted closing price of a selected stock over the years 2019 to 2022. The "basic girl" stocks were divided into sector-based categories, meaning that stocks that were related to each other based on the sector they operate in were grouped together. The reason for grouping the stocks this way was to help the viewer better understand how the stock was performing compared to other potential competitors in the same sector. By grouping the stocks together, it is easier to see the trends and performance of a particular stock relative to other stocks within the same sector. This can help identify patterns, potential correlations, and inform investment decisions. The three visualizations display the stock performance across different sectors, which would allow for direct comparison of the stock's performance to other stocks within the same sector.
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(flipbookr)
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+```
+
+**Media and Entertainment:** Meta, Netflix, Pinterest, and Spotify
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
+
+tickers = c("META","NFLX","PINS", "SPOT")
+
+for (i in tickers){
+  getSymbols(i,
+             from = "2019-09-23",
+             to = "2022-12-01")}
+
+x <- list(title = "date")
+y <- list(title = "value")
+
+stock <- data.frame(META$META.Adjusted,
+                    NFLX$NFLX.Adjusted,
+                    PINS$PINS.Adjusted,
+                    SPOT$SPOT.Adjusted)
+
+stock <- data.frame(stock,rownames(stock))
+colnames(stock) <- append(tickers,'Dates')
+
+stock$date<-as.Date(stock$Dates,"%Y-%m-%d")
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+stock.fig <- ggplot(stock, aes(x=date)) +
+  geom_line(aes(y=META), color="#027cf2")+
+  geom_line(aes(y=NFLX), color="#d50101")+
+  geom_line(aes(y=PINS), color="#b03c61")+
+  geom_line(aes(y=SPOT), color="#25b35a") +
+   labs(
+    title = "Stock Prices for Social Media and Entertainment Companies (2019-2022)",
+    x = "Date",
+    y = "Adjusted Closing Prices")+
+    guides(colour=guide_legend(title="Sports Apparel Companies")) +
+scale_color_manual(values=c("#027cf2"="#027cf2", "#d50101"="#d50101", "#b03c61"="#b03c61", "#25b35a"="#25b35a"), 
+                     labels=c("META", "Netflix", "Pinterest", "Spotify")) +
+  guides(color=guide_legend(title="Entertainment Companies"))
+
+ggplotly(stock.fig) %>%
+  layout(hovermode = "x")
+```
+
+**Food and Beverage:** Starbucks
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+## STARBUCKS
+# Load the Starbucks stock prices data
+ticker <- "SBUX"
+start_date <- "2015-01-01"
+end_date <- "2022-12-31"
+starbucks_data <- getSymbols(ticker, src = "yahoo", from = start_date, to = end_date, auto.assign = FALSE)
+
+starbucks_data <- as.data.frame(starbucks_data)
+starbucks_data <- rownames_to_column(starbucks_data)
+starbucks_data$DATE<-as.Date(starbucks_data$rowname,format = "%Y-%m-%d")
+
+# Create a candlestick plot
+starbucks_candlesticks_plot <- plot_ly(starbucks_data, x = ~DATE, type = "candlestick",
+                                       close = ~SBUX.Close, open = ~SBUX.Open, high = ~SBUX.High, low = ~SBUX.Low) %>%
+  layout(title = paste0("Monthly Candlesticks for Starbucks (", ticker, ")"),
+         xaxis = list(title = "Year"),
+         yaxis = list(title = "Price (USD)"))
+
+#starbucks_candlesticks_plot
+
+# Create a moving average plot
+starbucks_sma50 <- SMA(Cl(starbucks_data), n = 50)
+starbucks_sma200 <- SMA(Cl(starbucks_data), n = 200)
+
+starbucks_ma_plot <- plot_ly(starbucks_data, x = ~DATE, type = "candlestick",
+                                       close = ~SBUX.Close, open = ~SBUX.Open, high = ~SBUX.High, low = ~SBUX.Low) %>%
+  add_trace(y = starbucks_sma50, type = "scatter", mode = "lines",
+            line = list(color = "blue", width = 2, dash = "dot")) %>%
+  add_trace(y = starbucks_sma200, type = "scatter", mode = "lines",
+            line = list(color = "purple", width = 2, dash = "dot")) %>%
+  layout(title = paste0("Moving Average for Starbucks (", ticker, ")"),
+         xaxis = list(title = "Year"),
+         yaxis = list(title = "Price (USD)"))
+
+# Combine the two plots
+#plot_ly(starbucks_data, x = ~DATE, y = ~SBUX.Close, type = "scatter", mode = "lines",
+                            # line = list(color = "blue", width = 1)) %>%
+#subplot(starbucks_candlesticks_plot, starbucks_ma_plot, nrows = 2)
+starbucks_ma_plot
+```
+
+**Retail:** Apple, Etsy, Lululemon, Nike, Peloton, and Ulta
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
+
+tickers = c("NKE","AAPL","ETSY", "LULU", "ULTA", "PTON")
+
+for (i in tickers){
+  getSymbols(i,
+             from = "2019-09-30",
+             to = "2022-12-01")}
+
+x <- list(title = "date")
+y <- list(title = "value")
+
+stock <- data.frame(NKE$NKE.Adjusted,
+                    AAPL$AAPL.Adjusted,
+                    ETSY$ETSY.Adjusted,
+                    LULU$LULU.Adjusted,
+                    ULTA$ULTA.Adjusted,
+                    PTON$PTON.Adjusted) ## Sept 25, 2019
+
+stock <- data.frame(stock,rownames(stock))
+colnames(stock) <- append(tickers,'Dates')
+
+stock$date<-as.Date(stock$Dates,"%Y-%m-%d")
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+stock.fig <- ggplot(stock, aes(x=date)) +
+  geom_line(aes(y=NKE), color="#ff9a01")+
+  geom_line(aes(y=AAPL), color="#636363")+
+  geom_line(aes(y=ETSY), color="#8adab2")+
+  geom_line(aes(y=LULU), color="#ff0005") +
+  geom_line(aes(y=ULTA), color="#0282cd") +
+  geom_line(aes(y=PTON), color="#f74456") +
+   labs(
+    title = "Stock Prices for Retail Companies (2019-2022)",
+    x = "Date",
+    y = "Adjusted Closing Prices")+
+    guides(colour=guide_legend(title="Sports Apparel Companies")) +
+scale_color_manual(values=c("#ff9a01"="#ff9a01", "#636363"="#636363", "#8adab2"="#8adab2", "#ff0005"="#ff0005", "#0282cd"="#0282cd", "#f74456"="#f74456"), 
+                     labels=c("Nike", "Apple", "Etsy", "Lululemon", "ULTA", "Peloton")) +
+  guides(color=guide_legend(title="Retail Companies"))
+
+ggplotly(stock.fig) %>%
+  layout(hovermode = "x")
+
+```
+

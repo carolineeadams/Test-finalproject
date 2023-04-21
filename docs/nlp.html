@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Analysis of "Basic Girl Stocks" and their Presence in Stock Subreddits – nlp</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/bd-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Introduction</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eda.html" class="sidebar-item-text sidebar-link">Exploratory Data Analysis</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nlp.html" class="sidebar-item-text sidebar-link active">Natural Language Processing</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ml.html" class="sidebar-item-text sidebar-link">Machine Learning</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conclusion.html" class="sidebar-item-text sidebar-link">Conclusion</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="natural-language-processing" class="level1">
+<h1>Natural Language Processing</h1>
+<section id="executive-summary" class="level2">
+<h2 class="anchored" data-anchor-id="executive-summary">Executive Summary</h2>
+<p>Submissions and comments from the subreddit wallstreetbets were analyzed using natural language processing techniques to gain insights into discussions that Redditors have regarding stocks in general and about specific companies. Natural language processing is a subfield of artificial intelligence that involves analyzing large volumes of text data and extracting useful information from it, such as identifying topics, key phrases, and sentiment. We narrowed our analysis to focus mostly on wallstreetbets, as it is the most popular subreddit on the website Reddit that primarily discusses stocks and trading.</p>
+<p>Our main objective was to understand the sentiment of submissions and comments in this forum and the most frequent topics and themes that appeared across popular posts. We were also interested in whether discussions of “basic girl stocks” were prominent on this forum.</p>
+<p>We filtered down our submissions and comments, identified which discussed the companies that fall under the “basic girl” stock group, and performed basic data checks on our comments such as finding popular words. We then analyzed the sentiment of both posts and comments referencing “basic girl” stocks. Sentiment analysis is the use of computational techniques to automatically identify and classify the emotional tone or attitude expressed in a piece of text, such as positive, negative, or neutral. We found that approximately two-thirds of submissions were identified as having positive sentiment and approximately one-third was identified as having negative sentiment. Very few submissions had neutral sentiment results. Similarly, the overwhelming majority of comments were classified as having either positive or negative sentiment. Very few comments had neutral sentiment. There was a close to equal distribution of comments with positive and negative sentiment, although more comments had a positive sentiment than negative. Our results indicated that for each “basic girl” company, submissions that mentioned that company were mostly positive. For example, Meta and Apple were the two companies mentioned most frequently in the Reddit submissions we examined. About two-thirds of the submissions about these companies had positive sentiment, while about one-third had negative sentiment. We also applied topic modeling to the submissions that mentioned “basic girl” stocks. The analysis on four different groups of text revealed three primary topics. Overall, our analysis provides insights into the sentiment and topics of discussion surrounding “basic girl” stocks on the wallstreetbets subreddit.</p>
+</section>
+<section id="analysis-report-business-questions" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-report-business-questions">Analysis Report + Business Questions</h2>
+<p><strong>External Data</strong></p>
+<p>To analyze the relationship between the sentiment of Reddit posts and comments and the stock prices of the companies in the “basic girl” stocks list, we used external stock data for the same time frame as the Reddit submissions and comments (2022-2023). We collected the stock data for each company on the list and created a function to pull each stock file and combine the adjusted closing price of all of them into one cohesive data frame. Specifically, the adjusted closing price is the stock’s closing price on a particular day, adjusted for any corporate actions such as stock splits, dividends, and rights offerings that may have occurred before the next day of trading. Combining the adjusted closing prices for all the stocks enabled us to see how the “basic girl” stocks were performing collectively in the market over time. Once the stock data was collected and organized, we merged it with the Reddit data to visualize any potential relationships between the sentiment of Reddit posts and comments and the stock prices of the “basic girl” stocks. By merging the data, we could plot the sentiment scores against the adjusted closing prices to see if there were any patterns or correlations between them. This would allow us to explore if the sentiment expressed in the Reddit posts and comments could potentially impact the stock prices of the “basic girl” stocks.</p>
+<p>Figure 1 below displays the number of submissions and comments made on posts about “basic” stocks by day against average share price for those “basic” stocks for the time period of the provided Reddit data. As seen, there was a peak in discussion about “basic” stocks in Jan-Mar 2022. During the same time period, the average stock price dropped. The submissions and comments then plateaued for the rest of the year as the stock price steadily climbed back up but did not reach the previous price peak.</p>
+<p><strong>Figure 1. Logged Average Share Price of “Basic Stocks” and Number of Submissions/Comments on Relevant Reddit Submissions Over Time</strong></p>
+<p><em>Comment and submission frequency peaked in early 2022</em></p>
+<p><img src="images/Fig1_NLP.jpg" class="img-fluid"></p>
+<p><strong>Natural Language Processing Work</strong></p>
+<p>To begin, we collected all comments posted in the wallstreetbets subreddit group from January 1, 2022 through January 31, 2023, which resulted in a dataset with 15,688,244 rows. To reduce the size of our dataset, we identified the time period during which users were most active in posting submissions and comments on the subreddit, which was February 2022. The majority of comments were generated in the first half of the month, so we filtered the comments to only include those that were posted in the subreddit between February 1 and February 23, 2022, resulting in a total of 942,612 comments. In addition, we also identified all submissions in the wallstreetbets subreddit that mentioned the name or ticker of a “basic girl” company. This resulted in a dataset of slightly less than 2000 submissions. We linked these submissions to their associated comments to generate a limited comments dataset that included slightly over 100,000 comments.</p>
+<p>We took multiple steps to clean the comments dataframe representing all comments from February 1 through February 23, 2022, including removing stop words. We found that after stop words were removed, there were 428,609 unique words across the comments. See the top 10 words in Figure 2 below.</p>
+<p><strong>Figure 2. Top 10 Terms in Wallstreetbets Subreddit Comments (February 1 - February 23, 2022)</strong></p>
+<p><em>“Like”, “get”, “market”, “going”, and “money” were the top 5 words across all comments</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Fig2_NLP.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>We then examined the distribution of the lengths of all the comments. Most comments (over 700,000) had under 200 characters. There were some outliers with over 1000 characters. See the distribution of comment lengths below in Figure 3.</p>
+<p><strong>Figure 3. Frequency of Comments by Length</strong></p>
+<p><em>The majority of comments had less than 200 characters</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Fig3_NLP.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>In natural language processing, regular expressions (regex) are often used to identify patterns in text data. In this case, we used regex to create dummy variables that would indicate whether certain keywords appeared in the comments we were analyzing. Specifically, we were interested in identifying comments that referenced gender-related terminology, the names of the “basic girl” companies, and common words related to the stock market and trading. By creating dummy variables for each of these categories, we could then use them as predictors in our analysis to see if there was a relationship between these keywords and certain outcomes (e.g., stock price changes, sentiment towards a company). For example, we used a regex pattern to search for any comment that contains words or phrases related to gender (e.g., “boy,” “guy,” “female,” etc.); and if a comment contains any of these keywords, the corresponding dummy variable would be set to 1. We also used regex patterns to search for the names of the “basic girl” companies or common stock market-related words like “shares” or “investor.” Creating these dummy variables using regex allows us to quantify the presence or absence of certain keywords in the comments we are analyzing, which can help us to better understand the nature of the comments and their relationship to the stock market or other relevant outcomes. We found that 27,135 comments had gender related terminology, 34,356 comments had some mention of our “basic” stocks, and 126,070 comments had stock related terminology.</p>
+<p>We also applied TF-IDF weighting to the submissions and comments. TF-IDF weighting is a technique used in information retrieval and text mining to assess the importance of each term in a document. Each Reddit post or comment represents a document. TF-IDF values are calculated by multiplying the term frequency (TF) of the term in the document by the inverse document frequency (IDF) of the term in the corpus. Higher TF-IDF values indicate that the term is more significant to the document and less common in the corpus, and vice versa for lower values. By applying TF-IDF weighting to the submissions and comments, we are able to identify the most important terms within each document (i.e., each Reddit post or comment) relative to the entire corpus of documents. Terms with higher TF-IDF scores are considered more important to the document, and are often used as keywords or features in natural language processing applications like text classification or sentiment analysis, which will be done below. We found that the terms with the highest TF-IDF values were “nispe”, “rabble”, “beo”, “mqa”, and “imagery” (Figure 4).</p>
+<p><strong>Figure 4. Top 10 Terms in Wallstreetbets Subreddit Comments with Highest TF-IDF Values (February 1 - February 23, 2022)</strong></p>
+<p><em>The words with highest TF-IDF values did not provide useful information for our analysis</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Fig4-NLP.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p><strong>Sentiment Model</strong></p>
+<p>In this context, sentiment analysis refers to the process of using computational techniques to identify the emotional tone or attitude expressed in posts and comments related to “basic girl” stocks. This process was useful in helping answer <em>Business Question #7: Analyze the general sentiment of posts that mention “basic girl stocks”, and examine whether the different stocks have varying sentiments</em> and <em>Business Question #8: Explore which type of posts (positive, negative, or neutral) receive the most engagement, and determine if sentiment impacts the price of a specific stock.</em></p>
+<p>Sentiment modeling involves analyzing the language and context of the text to determine whether the sentiment expressed is positive, negative, or neutral. The sentiment analysis was done to gain insights into how people were talking about the stocks and to understand how this sentiment might be related to the stock prices. By classifying the sentiment of the posts and comments as positive, negative, or neutral, the researchers were able to identify whether there were any patterns or trends in the sentiment over time. For example, if there were many positive posts and comments about a particular stock, it might suggest that there was a positive sentiment surrounding the stock, which could potentially be reflected in the stock price. Conversely, if there were many negative posts and comments about a stock, it might suggest that there was a negative sentiment surrounding the stock, which could potentially lead to a decline in the stock price. We used the SparkNLP sentiment analysis tools to develop a pipeline that pulled in our documents and analyzed the sentiment of each comment, providing a resulting positive/negative/neutral.</p>
+<p>When looking at submissions, approximately two-thirds of the posts were identified as having positive sentiment and approximately one-third was identified as having negative sentiment. Very few submissions had neutral sentiment results (Figure 5).</p>
+<p><strong>Figure 5. Sentiment Analysis by Basic Girl Stock</strong></p>
+<p><em>Submissions generally lean positive for basic girl stocks</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Fig5_NLOP.jpg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>We found that positive submissions had, on average, almost three times the number of comments of negative submissions. Negative submissions had slightly higher scores (Table 1).</p>
+<p><strong>Table 1. Effect of Sentiment on Submission Engagement</strong></p>
+<p><em>Positive submissions had more comments than and a similar score to negative submissions</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Screen Shot 2023-04-21 at 4.18.57 PM.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>Our results indicated that for each “basic girl” company, submissions that mentioned that company were mostly positive (Table 2). For example, Meta and Apple were the two companies mentioned most frequently in the Reddit submissions we examined. About two-third of the submissions about these companies had positive sentiment, while about one-third had negative sentiment.&nbsp;</p>
+<p><strong>Table 2. Number of Comments by Sentiment Type and Type of “Basic Girl” Stock Mentioned in the Parent Submission</strong></p>
+<p><em>Lululemon had the highest proportion of positive comments, followed by tech stocks</em></p>
+<p><img src="images/Screen Shot 2023-04-21 at 4.19.26 PM.png" class="img-fluid"></p>
+<p>Average degrees of positivity were calculated for all submissions and cross tabulated by “basic girl” company mentioned (Table 3). Positivity scores close to 1 were the highest, and positivity scores close to 0 represented strong negativity.</p>
+<p><strong>Table 3. Effect of Sentiment on Submission Engagement by “Basic Girl” Stock Mentioned</strong></p>
+<p><em>Submissions that discussed stocks with the highest average share price had higher degrees of positivity, on average</em></p>
+<p><img src="images/Screen Shot 2023-04-21 at 4.22.56 PM.png" class="img-fluid"></p>
+<p>Submissions that mentioned each “basic girl” stock had a high average degree of positivity, with the exception of Starbucks, which had a score that indicated that these submissions on average were more negative than positive. Submissions that mentioned Lululemon had the highest average degree of positivity, followed by those associated with submissions that discussed Spotify, Meta, and Peloton. We see a weak positive relationship between degree of positivity of comments by “basic girl” company mentioned in the parent submission and average stock price (Table 3). For example, the two companies with the lowest average share prices, Peloton and Pinterest, had some of the lowest degrees of positivity, and Lululemon and Netflix had higher average share prices and higher degrees of positivity. Ulta is an outlier; the parent company had a high share price but comments on posts discussing this company had on average a mid-tier degree of positivity.</p>
+<p><em>Linked [<a href="https://github.com/gu-ppol567-project/ppol-567-final-project-team-1/blob/main/code/nlp/project_nlp.ipynb">here</a>] is the code for the sentiment analyses and visualizations.</em></p>
+<p><strong>Topic Modeling</strong></p>
+<p>We also used topic modeling in our research. This helped us answer <em>Business Question #6: For submissions where a “basic girl stock” is mentioned and we see large numbers of comments, identify what topics and themes are prominent in those discussions.</em> Topic modeling is a technique used to identify the underlying topics or themes in a large corpus of text data. It is a type of unsupervised learning, meaning that it does not require any pre-existing labels or categories to be assigned to the data. Instead, it uses statistical methods to group together words that tend to co-occur frequently within documents, and then assigns these groups of words to topics. We applied topic modeling to the submissions that mentioned “basic girl” stocks in order to identify the most common topics or themes that were being discussed in relation to these stocks on the <code>wallstreetbets</code> subreddit. Overall, topic modeling provides a useful way to gain insights into the underlying themes and topics that are being discussed in a large corpus of text data, and can help to identify trends or patterns that may not be immediately apparent from a manual review of the data.</p>
+<p>We applied topic modeling to four different groups of text to identify overall themes in specific discussions, understand variation in themes across these text groupings, and see if the generated themes were similar to the topics of interest to us (discussions of gender, the stock market generally, or the “basic girl” companies). These topics of interest were identified in the submissions or comments text by conducting regex searches to find relevant words and creating dummy variables to identify posts that included those relevant words. The text groupings used for topic modeling were 1) submissions that mentioned “basic girl” stocks, 2) all comments on those submissions, 3) comments on those submissions that included direct references to gender-, stock market-, or “basic girl” company-related terms, and 4) all comments during the busiest time on the <code>wallstreetbets</code> subreddit (February 1 through February 23, 2022) that included direct references to gender-, stock market-, or “basic girl” company-related terms. Four topics were generated for each text grouping (Table 4).</p>
+<p>The topics generated for submissions that mentioned “basic girl” stocks included terms representing “basic girl” companies like Netflix and Meta (Facebook), as well as terms describing success, holding stocks, and the Metaverse. Topics for the comments on these submissions also focused on the company, Meta, but differed from the topics generated for the submissions in that they included more terms related to bots, money, and the stock market more broadly.</p>
+<p>When comments were limited to those that included a gender-, stock-market-, or “basic girl” company-related term, generated topics narrowed in on inflation, the market, and the Fed, buying and selling stocks, and companies like Facebook and Apple. These topics were present for the comments examined in February 2022 and for all comments associated with posts that discussed “basic girl” stocks. This makes sense as we had narrowed in on comments that discussed stock market terms and “basic girl company” mentions. Both translated into the generated topics. However, we did not see topics generated related to gendered terms. Lastly, the focus on the Fed, inflation, and the market in the topics generated for the subset of comments from February 1 through February 23, 2022, made sense, as this was around the time that the Russian invasion of Ukraine resulted in global inflation and a market crash.</p>
+<p><strong>Table 4. Topics Generated from Topic Modeling and Derived from Top Words</strong></p>
+<p><em>Recurring themes included the stock market, generally, successful companies and the Metaverse, and the Fed and inflation</em></p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/Screen Shot 2023-04-21 at 4.24.20 PM.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p><em>Linked [<a href="https://github.com/gu-ppol567-project/ppol-567-final-project-team-1/blob/main/code/nlp/TopicModeling.ipynb">here</a>] is the code for the topic modeling analyses and visualizations.</em></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Content <strong>?var:course.copyright_year</strong> by [<strong>?var:author.name</strong>] <br> All content licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)</a></div>   
+    <div class="nav-footer-right">Made with and <a href="https://quarto.org/">Quarto</a><br> <a href="?var:course.github">View the source at GitHub</a></div>
+  </div>
+</footer>
+
+
+
+</body></html>
